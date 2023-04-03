@@ -73,14 +73,19 @@ export interface IViewportOptions
      * @default false
      */
     noTicker?: boolean;
-
+    
     /**
-     * EventSystem is required now
+     * @deprecated Use explicit canvasElement instead
      */
-    events: EventSystem;
+    events?: EventSystem;
 
     /**
-     * Remove oncontextmenu=() => {} from options.events.domElement
+     * Use explicit DOM Canvas Element instead of EventSystem
+     */
+    canvasElement: HTMLCanvasElement;
+
+    /**
+     * Remove oncontextmenu=() => {} from options.canvasElement
      */
     disableOnContextMenu?: boolean;
 
@@ -211,7 +216,8 @@ export class Viewport extends Container
      * @param {PIXI.Ticker} [options.ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
      * @param {PIXI.EventSystem} [options.events] EventSystem available from app.events or added manually and passed here
      * location on screen
-     * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the pixi's events.domElement
+     * @param {HTMLCanvasElement} [options.canvasElement] Use explicit DOM Canvas Element instead of EventSystem
+     * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the canvasElement
      */
     constructor(options: IViewportOptions)
     {
@@ -231,7 +237,7 @@ export class Viewport extends Container
 
         if (this.options.disableOnContextMenu)
         {
-            this.options.events.domElement.addEventListener('contextmenu', this._disableOnContextMenu);
+            this.options.canvasElement.addEventListener('contextmenu', this._disableOnContextMenu);
         }
 
         if (!this.options.noTicker)
@@ -253,7 +259,7 @@ export class Viewport extends Container
         }
         if (this.options.disableOnContextMenu)
         {
-            this.options.events.domElement.removeEventListener('contextmenu', this._disableOnContextMenu);
+            this.options.canvasElement.removeEventListener('contextmenu', this._disableOnContextMenu);
         }
 
         this.input.destroy();
@@ -1163,7 +1169,7 @@ export class Viewport extends Container
     /**
      * Zoom using mouse wheel
      *
-     * NOTE: the default event listener for 'wheel' event is the options.events.domElement.
+     * NOTE: the default event listener for 'wheel' event is the options.canvasElement.
      *
      * @param {IWheelOptions} [options]
      * @param {number} [options.percent=0.1] - percent to scroll with each spin

@@ -1,4 +1,3 @@
-import type { FederatedEvent } from '@pixi/events';
 import type { Viewport } from '../Viewport';
 
 /**
@@ -33,19 +32,19 @@ export class Plugin
     }
 
     /** Handler for pointerdown PIXI event */
-    public down(_e: FederatedEvent): boolean
+    public down(_e: PointerEvent): boolean
     {
         return false;
     }
 
     /** Handler for pointermove PIXI event */
-    public move(_e: FederatedEvent): boolean
+    public move(_e: PointerEvent): boolean
     {
         return false;
     }
 
     /** Handler for pointerup PIXI event */
-    public up(_e: FederatedEvent): boolean
+    public up(_e: PointerEvent): boolean
     {
         return false;
     }

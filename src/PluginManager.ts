@@ -13,7 +13,6 @@ import type {
     SnapZoom,
     Wheel,
 } from './plugins';
-import type { FederatedEvent } from '@pixi/events';
 import type { Viewport } from './Viewport';
 
 const PLUGIN_ORDER = [
@@ -233,7 +232,7 @@ export class PluginManager
      * @internal
      * @ignore
      */
-    public down(event: FederatedEvent): boolean
+    public down(event: PointerEvent): boolean
     {
         let stop = false;
 
@@ -254,7 +253,7 @@ export class PluginManager
      * @internal
      * @ignore
      */
-    public move(event: FederatedEvent): boolean
+    public move(event: PointerEvent): boolean
     {
         let stop = false;
 
@@ -275,7 +274,7 @@ export class PluginManager
      * @internal
      * @ignore
      */
-    public up(event: FederatedEvent): boolean
+    public up(event: PointerEvent): boolean
     {
         let stop = false;
 
