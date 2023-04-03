@@ -1,7 +1,7 @@
-import PIXI, { Point, Rectangle } from '@pixi/core';
+import { Point, Rectangle } from '@pixi/core';
 
 import type { IPointData } from '@pixi/core';
-import {  EventBoundary, FederatedPointerEvent } from '@pixi/events';
+import { FederatedPointerEvent } from '@pixi/events';
 import type { Viewport } from './Viewport';
 
 export interface IViewportTouch
@@ -50,12 +50,14 @@ export class InputManager
         // this.viewport.on('pointerdown', this.down, this);
         this.downFunction = (e) => this.down(e);
         this.viewport.options.canvasElement.addEventListener('pointerdown', this.downFunction, { passive: true });
-        
-            if (this.viewport.options.allowPreserveDragOutside)
+
+        if (this.viewport.options.allowPreserveDragOutside)
 
         {
             // this.viewport.on('globalpointermove', this.move, this);
-            // this.viewport.options.canvasElement.addEventListener('globalpointermove', this.moveFunction, { passive: true });
+            // this.viewport.options.canvasElement.addEventListener('globalpointermove',
+            //     this.moveFunction,
+            //     { passive: true });
         }
         else
         {
@@ -67,10 +69,10 @@ export class InputManager
         // this.viewport.on('pointerup', this.up, this);
         this.upFunction = (e) => this.up(e);
         this.viewport.options.canvasElement.addEventListener('pointerup', this.upFunction, { passive: true });
-        
+
         // this.viewport.on('pointerupoutside', this.up, this);
         // this.viewport.options.canvasElement.addEventListener('pointerupoutside', this.upFunction, { passive: true });
-            
+
         // this.viewport.on('pointercancel', this.up, this);
         this.viewport.options.canvasElement.addEventListener('pointercancel', this.upFunction, { passive: true });
 
@@ -250,24 +252,30 @@ export class InputManager
         return point;
     }
 
-    public mapPositionToPoint(point: IPointData, x: number, y: number): void {
+    public mapPositionToPoint(point: IPointData, x: number, y: number): void
+    {
         let rect;
-        if (!this.viewport.options.canvasElement.parentElement) {
-          rect = {
-            x: 0,
-            y: 0,
-            width: this.viewport.options.canvasElement.width,
-            height: this.viewport.options.canvasElement.height,
-            left: 0,
-            top: 0
-          };
-        } else {
-          rect = this.viewport.options.canvasElement.getBoundingClientRect();
+
+        if (!this.viewport.options.canvasElement.parentElement)
+        {
+            rect = {
+                x: 0,
+                y: 0,
+                width: this.viewport.options.canvasElement.width,
+                height: this.viewport.options.canvasElement.height,
+                left: 0,
+                top: 0
+            };
         }
-        const resolutionMultiplier = 1 // this.resolution;
+        else
+        {
+            rect = this.viewport.options.canvasElement.getBoundingClientRect();
+        }
+        const resolutionMultiplier = 1; // this.resolution;
+
         point.x = (x - rect.left) * (this.viewport.options.canvasElement.width / rect.width) * resolutionMultiplier;
         point.y = (y - rect.top) * (this.viewport.options.canvasElement.height / rect.height) * resolutionMultiplier;
-      }
+    }
 
     /** Handle wheel events */
     public handleWheel(event: WheelEvent): void

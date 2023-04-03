@@ -14,7 +14,7 @@ export default function ease(ease: any, defaults?: any): any
 {
     if (!ease)
     {
-        // @ts-expect-error
+        // @ts-expect-error - penner is not typed
         return penner[defaults];
     }
     else if (typeof ease === 'function')
@@ -23,7 +23,7 @@ export default function ease(ease: any, defaults?: any): any
     }
     else if (typeof ease === 'string')
     {
-        // @ts-expect-error
+        // @ts-expect-error - penner is not typed
         return penner[ease];
     }
 }

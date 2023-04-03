@@ -73,7 +73,7 @@ export interface IViewportOptions
      * @default false
      */
     noTicker?: boolean;
-    
+
     /**
      * @deprecated Use explicit canvasElement instead
      */
