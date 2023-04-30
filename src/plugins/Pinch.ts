@@ -2,7 +2,6 @@ import { Plugin } from './Plugin';
 import { Point } from '@pixi/core';
 
 import type { IPointData } from '@pixi/core';
-import type { FederatedPointerEvent } from '@pixi/events';
 import type { IViewportTouch } from '../InputManager';
 import type { Viewport } from '../Viewport';
 
@@ -10,27 +9,27 @@ import type { Viewport } from '../Viewport';
 export interface IPinchOptions
 {
     /** Disable two-finger dragging. */
-    noDrag?: boolean;
+    noDrag?: boolean
 
     /**
-     * Percent to modify pinch speed.
-     *
-     * @default 1
-     */
-    percent?: number;
+   * Percent to modify pinch speed.
+   *
+   * @default 1
+   */
+    percent?: number
 
     /**
-     * Factor to multiply two-finger drag to increase speed of movement
-     *
-     * @default 1
-     */
-    factor?: number;
+   * Factor to multiply two-finger drag to increase speed of movement
+   *
+   * @default 1
+   */
+    factor?: number
 
     /** Place this point at center during zoom instead of center of two fingers */
-    center?: Point | null;
+    center?: Point | null
 
     /** Axis to zoom */
-    axis?: 'all' | 'x' | 'y';
+    axis?: 'all' | 'x' | 'y'
 }
 
 const DEFAULT_PINCH_OPTIONS: Required<IPinchOptions> = {
@@ -38,7 +37,7 @@ const DEFAULT_PINCH_OPTIONS: Required<IPinchOptions> = {
     percent: 1,
     center: null,
     factor: 1,
-    axis: 'all',
+    axis: 'all'
 };
 
 /**
@@ -61,8 +60,8 @@ export class Pinch extends Plugin
     protected lastCenter?: IPointData | null;
 
     /**
-     * This is called by {@link Viewport.pinch}.
-     */
+   * This is called by {@link Viewport.pinch}.
+   */
     constructor(parent: Viewport, options: IPinchOptions = {})
     {
         super(parent);
@@ -91,15 +90,14 @@ export class Pinch extends Plugin
         return ['all', 'y'].includes(this.options.axis);
     }
 
-    public move(e: FederatedPointerEvent): boolean
+    public move(e: PointerEvent): boolean
     {
         if (this.paused || !this.active)
         {
             return false;
         }
-
-        const x = e.global.x;
-        const y = e.global.y;
+        const x = e.x;
+        const y = e.y;
 
         const pointers = this.parent.input.touches;
 
@@ -107,9 +105,12 @@ export class Pinch extends Plugin
         {
             const first = pointers[0] as IViewportTouch;
             const second = pointers[1] as IViewportTouch;
-            const last = (first.last && second.last)
-                ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-                : null;
+            const last
+        = first.last && second.last
+            ? Math.sqrt(
+                Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2)
+            )
+            : null;
 
             if (first.id === e.pointerId)
             {
@@ -124,22 +125,27 @@ export class Pinch extends Plugin
                 let oldPoint: IPointData | undefined;
 
                 const point = new Point(
-                    (first.last as IPointData).x + (((second.last as IPointData).x - (first.last as IPointData).x) / 2),
-                    (first.last as IPointData).y + (((second.last as IPointData).y - (first.last as IPointData).y) / 2),
+                    (first.last as IPointData).x
+            + ((second.last as IPointData).x - (first.last as IPointData).x) / 2,
+                    (first.last as IPointData).y
+            + ((second.last as IPointData).y - (first.last as IPointData).y) / 2
                 );
 
                 if (!this.options.center)
                 {
                     oldPoint = this.parent.toLocal(point);
                 }
-                let dist = Math.sqrt(Math.pow(
-                    (second.last as IPointData).x - (first.last as IPointData).x, 2)
-                    + Math.pow((second.last as IPointData).y - (first.last as IPointData).y, 2));
+                let dist = Math.sqrt(
+                    Math.pow((second.last as IPointData).x - (first.last as IPointData).x, 2)
+            + Math.pow((second.last as IPointData).y - (first.last as IPointData).y, 2)
+                );
 
-                dist = dist === 0 ? dist = 0.0000000001 : dist;
+                dist = dist === 0 ? (dist = 0.0000000001) : dist;
 
-                const change = (1 - (last / dist)) * this.options.percent
-                    * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
+                const change
+          = (1 - last / dist)
+          * this.options.percent
+          * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
 
                 if (this.isAxisX())
                 {

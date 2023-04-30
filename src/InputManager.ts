@@ -1,13 +1,12 @@
 import { Point, Rectangle } from '@pixi/core';
 
 import type { IPointData } from '@pixi/core';
-import { FederatedPointerEvent } from '@pixi/events';
 import type { Viewport } from './Viewport';
 
 export interface IViewportTouch
 {
-    id: number;
-    last: IPointData | null;
+    id: number
+    last: IPointData | null
 }
 
 /**
@@ -45,14 +44,20 @@ export class InputManager
         this.viewport.eventMode = 'static';
         if (!this.viewport.forceHitArea)
         {
-            this.viewport.hitArea = new Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight);
+            this.viewport.hitArea = new Rectangle(
+                0,
+                0,
+                this.viewport.worldWidth,
+                this.viewport.worldHeight
+            );
         }
         // this.viewport.on('pointerdown', this.down, this);
         this.downFunction = (e) => this.down(e);
-        this.viewport.options.canvasElement.addEventListener('pointerdown', this.downFunction, { passive: true });
+        this.viewport.options.canvasElement.addEventListener('pointerdown', this.downFunction, {
+            passive: true
+        });
 
         if (this.viewport.options.allowPreserveDragOutside)
-
         {
             // this.viewport.on('globalpointermove', this.move, this);
             // this.viewport.options.canvasElement.addEventListener('globalpointermove',
@@ -63,37 +68,44 @@ export class InputManager
         {
             // this.viewport.on('pointermove', this.move, this);
             this.moveFunction = (e) => this.move(e);
-            this.viewport.options.canvasElement.addEventListener('pointermove', this.moveFunction, { passive: true });
+            this.viewport.options.canvasElement.addEventListener('pointermove', this.moveFunction, {
+                passive: true
+            });
         }
 
         // this.viewport.on('pointerup', this.up, this);
         this.upFunction = (e) => this.up(e);
-        this.viewport.options.canvasElement.addEventListener('pointerup', this.upFunction, { passive: true });
+        this.viewport.options.canvasElement.addEventListener('pointerup', this.upFunction, {
+            passive: true
+        });
 
         // this.viewport.on('pointerupoutside', this.up, this);
         // this.viewport.options.canvasElement.addEventListener('pointerupoutside', this.upFunction, { passive: true });
 
         // this.viewport.on('pointercancel', this.up, this);
-        this.viewport.options.canvasElement.addEventListener('pointercancel', this.upFunction, { passive: true });
+        this.viewport.options.canvasElement.addEventListener('pointercancel', this.upFunction, {
+            passive: true
+        });
 
         if (!this.viewport.options.allowPreserveDragOutside)
         {
             // this.viewport.on('pointerleave', this.up, this);
-            this.viewport.options.canvasElement.addEventListener('pointerleave', this.upFunction, { passive: true });
+            this.viewport.options.canvasElement.addEventListener('pointerleave', this.upFunction, {
+                passive: true
+            });
         }
 
         this.wheelFunction = (e) => this.handleWheel(e);
-        this.viewport.options.canvasElement.addEventListener(
-            'wheel',
-            this.wheelFunction as any,
-            { passive: this.viewport.options.passiveWheel });
+        this.viewport.options.canvasElement.addEventListener('wheel', this.wheelFunction as any, {
+            passive: this.viewport.options.passiveWheel
+        });
         this.isMouseDown = false;
     }
 
     /**
-     * Removes all event listeners from viewport
-     * (useful for cleanup of wheel when removing viewport)
-     */
+   * Removes all event listeners from viewport
+   * (useful for cleanup of wheel when removing viewport)
+   */
     public destroy(): void
     {
         this.viewport.options.canvasElement.removeEventListener('wheel', this.wheelFunction as any);
@@ -107,10 +119,10 @@ export class InputManager
     }
 
     /**
-     * handle down events for viewport
-     *
-     * @param {PointerEvent} event
-     */
+   * handle down events for viewport
+   *
+   * @param {PointerEvent} event
+   */
     public down(event: PointerEvent): void
     {
         if (this.viewport.pause || !this.viewport.worldVisible)
@@ -165,9 +177,9 @@ export class InputManager
     }
 
     /**
-     * @param {number} change
-     * @returns whether change exceeds threshold
-     */
+   * @param {number} change
+   * @returns whether change exceeds threshold
+   */
     public checkThreshold(change: number): boolean
     {
         if (Math.abs(change) >= this.viewport.threshold)
@@ -228,7 +240,7 @@ export class InputManager
         if (this.clickedAvailable && this.count() === 0 && this.last)
         {
             this.viewport.emit('clicked', {
-                event: event as FederatedPointerEvent,
+                event,
                 screen: this.last,
                 world: this.viewport.toWorld(this.last),
                 viewport: this.viewport
@@ -273,8 +285,14 @@ export class InputManager
         }
         const resolutionMultiplier = 1; // this.resolution;
 
-        point.x = (x - rect.left) * (this.viewport.options.canvasElement.width / rect.width) * resolutionMultiplier;
-        point.y = (y - rect.top) * (this.viewport.options.canvasElement.height / rect.height) * resolutionMultiplier;
+        point.x
+      = (x - rect.left)
+      * (this.viewport.options.canvasElement.width / rect.width)
+      * resolutionMultiplier;
+        point.y
+      = (y - rect.top)
+      * (this.viewport.options.canvasElement.height / rect.height)
+      * resolutionMultiplier;
     }
 
     /** Handle wheel events */
@@ -288,10 +306,12 @@ export class InputManager
         // only handle wheel events where the mouse is over the viewport
         const point = this.viewport.toLocal(this.getPointerPosition(event));
 
-        if (this.viewport.left <= point.x
-            && point.x <= this.viewport.right
-            && this.viewport.top <= point.y
-            && point.y <= this.viewport.bottom)
+        if (
+            this.viewport.left <= point.x
+      && point.x <= this.viewport.right
+      && this.viewport.top <= point.y
+      && point.y <= this.viewport.bottom
+        )
         {
             const stop = this.viewport.plugins.wheel(event);
 
@@ -337,8 +357,8 @@ export class InputManager
     }
 
     /**
-     * @returns {number} count of mouse/touch pointers that are down on the viewport
-     */
+   * @returns {number} count of mouse/touch pointers that are down on the viewport
+   */
     count(): number
     {
         return (this.isMouseDown ? 1 : 0) + this.touches.length;

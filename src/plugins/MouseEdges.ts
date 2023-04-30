@@ -1,51 +1,50 @@
 import { Plugin } from './Plugin';
 
 import type { Viewport } from '../Viewport';
-import type { FederatedPointerEvent } from '@pixi/events';
 
 /** Insets for mouse edges scrolling regions */
 export interface IMouseEdgesInsets
 {
     /** Distance from center of screen in screen pixels */
-    radius?: number | null;
+    radius?: number | null
 
     /** Distance from all sides in screen pixels */
-    distance?: number | null;
+    distance?: number | null
 
     /** Alternatively, set top distance (leave unset for no top scroll) */
-    top?: number | null;
+    top?: number | null
 
     /** Alternatively, set bottom distance (leave unset for no top scroll) */
-    bottom?: number | null;
+    bottom?: number | null
 
     /** Alternatively, set left distance (leave unset for no top scroll) */
-    left?: number | null;
+    left?: number | null
 
     /** Alternatively, set right distance (leave unset for no top scroll) */
-    right?: number | null;
+    right?: number | null
 }
 
 /** Options for {@link MouseEdges}. */
 export interface IMouseEdgesOptions extends IMouseEdgesInsets
 {
     /** Speed in pixels/frame to scroll viewport */
-    speed?: number;
+    speed?: number
 
     /** Reverse direction of scroll */
-    reverse?: boolean;
+    reverse?: boolean
 
     /** Don't use decelerate plugin even if it's installed */
-    noDecelerate?: boolean;
+    noDecelerate?: boolean
 
     /**
-     * If using radius, use linear movement (+/- 1, +/- 1) instead of angled movement.
-     *
-     * (Math.cos(angle from center), Math.sin(angle from center))
-     */
-    linear?: boolean;
+   * If using radius, use linear movement (+/- 1, +/- 1) instead of angled movement.
+   *
+   * (Math.cos(angle from center), Math.sin(angle from center))
+   */
+    linear?: boolean
 
     /** Allows plugin to continue working even when there's a `mousedown` event. */
-    allowButtons?: boolean;
+    allowButtons?: boolean
 }
 
 const MOUSE_EDGES_OPTIONS: Required<IMouseEdgesOptions> = {
@@ -59,7 +58,7 @@ const MOUSE_EDGES_OPTIONS: Required<IMouseEdgesOptions> = {
     reverse: false,
     noDecelerate: false,
     linear: false,
-    allowButtons: false,
+    allowButtons: false
 };
 
 /**
@@ -96,15 +95,16 @@ export class MouseEdges extends Plugin
     protected vertical?: number | null;
 
     /**
-     * This is called by {@link Viewport.mouseEdges}.
-     */
+   * This is called by {@link Viewport.mouseEdges}.
+   */
     constructor(parent: Viewport, options: IMouseEdgesOptions = {})
     {
         super(parent);
 
         this.options = Object.assign({}, MOUSE_EDGES_OPTIONS, options);
         this.reverse = this.options.reverse ? 1 : -1;
-        this.radiusSquared = typeof this.options.radius === 'number' ? Math.pow(this.options.radius, 2) : null;
+        this.radiusSquared
+      = typeof this.options.radius === 'number' ? Math.pow(this.options.radius, 2) : null;
 
         this.resize();
     }
@@ -125,7 +125,8 @@ export class MouseEdges extends Plugin
             this.left = this.options.left;
             this.top = this.options.top;
             this.right = this.options.right === null ? null : this.parent.screenWidth - this.options.right;
-            this.bottom = this.options.bottom === null ? null : this.parent.screenHeight - this.options.bottom;
+            this.bottom
+        = this.options.bottom === null ? null : this.parent.screenHeight - this.options.bottom;
         }
     }
 
@@ -143,20 +144,22 @@ export class MouseEdges extends Plugin
         return false;
     }
 
-    public move(event: FederatedPointerEvent): boolean
+    public move(event: PointerEvent): boolean
     {
         if (this.paused)
         {
             return false;
         }
-        if ((event.pointerType !== 'mouse' && event.pointerId !== 1)
-            || (!this.options.allowButtons && event.buttons !== 0))
+        if (
+            (event.pointerType !== 'mouse' && event.pointerId !== 1)
+      || (!this.options.allowButtons && event.buttons !== 0)
+        )
         {
             return false;
         }
 
-        const x = event.global.x;
-        const y = event.global.y;
+        const x = event.x;
+        const y = event.y;
 
         if (this.radiusSquared)
         {
@@ -169,8 +172,10 @@ export class MouseEdges extends Plugin
 
                 if (this.options.linear)
                 {
-                    this.horizontal = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000);
-                    this.vertical = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000);
+                    this.horizontal
+            = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000);
+                    this.vertical
+            = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000);
                 }
                 else
                 {
@@ -231,7 +236,9 @@ export class MouseEdges extends Plugin
 
         if (this.horizontal && decelerate && !this.options.noDecelerate)
         {
-            decelerate.activate({ x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60) });
+            decelerate.activate({
+                x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60)
+            });
         }
     }
 

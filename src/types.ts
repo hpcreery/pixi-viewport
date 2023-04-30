@@ -1,18 +1,17 @@
-import type { FederatedEvent } from '@pixi/events';
 import type { Point } from '@pixi/math';
 import type { Viewport } from './Viewport';
 
 export type DragEvent = {
-    event: FederatedEvent,
-    screen: Point,
-    world: Point,
+    event: PointerEvent // FederatedPointerEvent,
+    screen: Point
+    world: Point
     viewport: Viewport
 };
 
 export type ClickedEvent = DragEvent;
 
 export type MovedEvent = {
-    viewport: Viewport,
+    viewport: Viewport
     type:
     | 'wheel'
     | 'pinch'
@@ -26,24 +25,26 @@ export type MovedEvent = {
     | 'clamp-x'
     | 'clamp-y'
     | 'bounce-x'
-    | 'bounce-y',
-    original?: Point,
+    | 'bounce-y'
+    original?: Point
 };
 
 export type ZoomedEvent = {
-    viewport: Viewport,
-    type: 'wheel' | 'pinch' | 'animate' | 'ensureVisible' | 'clamp-zoom',
-    center?: Point,
-    original?: Point,
+    viewport: Viewport
+    type: 'wheel' | 'pinch' | 'animate' | 'ensureVisible' | 'clamp-zoom'
+    center?: Point
+    original?: Point
 };
 
-export type WheelStartEvent = { event: WheelEvent, viewport: Viewport };
+export type WheelStartEvent = { event: WheelEvent; viewport: Viewport };
 
 export type Events = {
-    wheel: [{
-        event: FederatedEvent,
-        screen: Point,
-        world: Point,
-        viewport: Viewport
-    }],
+    wheel: [
+        {
+            event: WheelEvent // FederatedEvent
+            screen: Point
+            world: Point
+            viewport: Viewport
+        }
+    ]
 };
